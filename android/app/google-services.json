@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "324736155718",
+    "project_id": "philosophy-today",
+    "storage_bucket": "philosophy-today.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324736155718:android:75b2e6b69f8c4a6d1e8a47",
+        "android_client_info": {
+          "package_name": "com.sapython.PhilosophyToday"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "324736155718-tgcvdjgjiusnnlv6jnqi4ou3r4b8enu1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sapython.PhilosophyToday",
+            "certificate_hash": "30b7ad0e9c775ca363b12958fe829957fc451138"
+          }
+        },
+        {
+          "client_id": "324736155718-bej5kjquos4hm1s9uhl8ldceatfdi08v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrZweDYRtHQHty1OaZGlhmmvD0yVD_KYU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "324736155718-bej5kjquos4hm1s9uhl8ldceatfdi08v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

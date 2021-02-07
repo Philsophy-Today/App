@@ -39,7 +39,7 @@ class PostRouter extends StatelessWidget {
       return convertData;
 
     } else {
-      String url = "http://philosophytoday.in/wp-json/wp/v2/posts?_emded";
+      String url = "http://philosophytoday.in/wp-json/wp/v2/posts?_embed";
       debugPrint(url);
       final response = await http.get(url);
       var convertData = jsonDecode(response.body);

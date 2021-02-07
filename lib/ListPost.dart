@@ -254,6 +254,8 @@ class _CategoryListState extends State<CategoryList> {
                   imageUrl: wpPost['featured_image_urls']['large'][0],
                   title: wpPost['title']['rendered'].toString(),
                   subtitle: wpPost['excerpt']['rendered'],
+                  type:"slugBased",
+                  slug:wpPost["slug"],
                 );
               },
             );

@@ -88,18 +88,6 @@ class _MainRouterState extends State<MainRouter> {
   @override
   void initState(){
     super.initState();
-    // _firebaseMessaging.configure(
-    //   onMessage: (Map<String, dynamic> message) async {
-    //     print("onMessage: $message");
-    //   },
-    //   onBackgroundMessage: myBackgroundMessageHandler,
-    //   onLaunch: (Map<String, dynamic> message) async {
-    //     print("onLaunch: $message");
-    //   },
-    //   onResume: (Map<String, dynamic> message) async {
-    //     print("onResume: $message");
-    //   },
-    // );
   }
 
   @override

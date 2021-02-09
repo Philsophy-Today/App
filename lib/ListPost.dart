@@ -280,7 +280,7 @@ class _CategoryListState extends State<CategoryList> {
                     ),
                     Center(
                       child: SizedBox(
-                        child: Image(
+                        child: const Image(
                           image: AssetImage("assets/images/notFound.png"),
                         ),
                       ),

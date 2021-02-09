@@ -6,6 +6,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import "package:http/http.dart" as http;
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -61,7 +63,7 @@ class PostRouter extends StatelessWidget {
           leading: Container(
             // margin: EdgeInsets.only(top:10),
             child: IconButton(
-              icon: Icon(Icons.menu, size: 40,color: Colors.black87,), // change this size and style
+              icon: Icon(Icons.menu, size: 40,color: Colors.lightBlueAccent), // change this size and style
               onPressed: () => _scaffoldKey.currentState.openDrawer(),
             ),
           ),
@@ -69,7 +71,7 @@ class PostRouter extends StatelessWidget {
             Container(
               // margin: EdgeInsets.only(top:5),
               child: IconButton(
-                icon: Icon(Icons.search, color: Colors.black87),
+                icon: Icon(Icons.search, color: Colors.lightBlueAccent),
                 iconSize: 50,
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search()));
@@ -114,13 +116,25 @@ class PostRouter extends StatelessWidget {
                 ),
               ),
               ListTile(
+                leading: Icon(MdiIcons.web),
                 title: Text("Visit Website"),
+                onTap: () async {
+                  await launch("https://philosophytoday.in");
+                },
               ),
               ListTile(
+                leading: Icon(MdiIcons.account),
                 title: Text("Request for a contributor"),
+                onTap: () async {
+                  await launch("https://philosophytoday.in/online-internship-philosophy-today/");
+                },
               ),
               ListTile(
-                title: Text("Alpha"),
+                leading:Icon(MdiIcons.pen),
+                title: Text("Essay Competition"),
+                onTap: () async {
+                  await launch("https://philosophytoday.in/2nd-philosophy-today-essay-competition-2021/");
+                },
               ),
             ],
           ),

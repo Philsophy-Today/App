@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:convert';
 
 import 'package:flappy_search_bar/flappy_search_bar.dart';
@@ -9,7 +8,7 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:PhilosophyToday/screens/tools/tools.dart';
-import 'package:PhilosophyToday/main.dart' show currentTheme, setTheme;
+import 'package:PhilosophyToday/main.dart' show currentTheme;
 
 import '../post/PostRouter.dart';
 import '../tools/Style.dart';
@@ -26,7 +25,6 @@ class Post {
 class Search extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     return MaterialApp(
       themeMode: currentTheme,
       darkTheme: darkTheme,
@@ -51,12 +49,7 @@ class _HomeState extends State<Home> {
     query = query.replaceAll("&", "");
     query = query.replaceAll("=", "");
     query = query.replaceAll("?", "");
-    if (query.contains(RegExp("#.*."))){
-      final response = await http.get(
-          "http://philosophytoday.in/wp-json/wp/v2/posts?tag=$query",
-          headers: {"Accept":"application/json"}
-      );
-    }
+    query = query.replaceAll("#", "");
     final response = await http.get(
         "http://philosophytoday.in/wp-json/wp/v2/posts?search=$query",
         headers: {"Accept":"application/json"}

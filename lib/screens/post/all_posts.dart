@@ -194,12 +194,6 @@ class LinePostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double leftVar = 0;
-    if (first == true) {
-      leftVar = 50;
-    } else {
-      leftVar = 0;
-    }
     String subtitleData = subtitle.replaceAll("<p>", "");
     subtitleData = subtitleData.replaceAll("</p>", "");
     return Container(

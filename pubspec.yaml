@@ -36,6 +36,8 @@ dependencies:
   firebase_analytics:
   google_sign_in:
   cloud_firestore:
+  rxdart:
+  image_picker: ^0.6.7+22
   hive: ^1.4.4+1
   hive_flutter: ^0.3.1
   path_provider: ^1.6.27
@@ -80,6 +82,7 @@ flutter:
     - assets/Icon/icon.png
     - assets/images/user.png
     - assets/images/googleLogo.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

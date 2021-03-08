@@ -10,8 +10,6 @@ import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
 
 import 'models/user.dart';
-import 'screens/home/HomePage.dart';
-import 'screens/tools/Style.dart';
 
 String messageTitle = "Empty";
 String notificationAlert = "alert";

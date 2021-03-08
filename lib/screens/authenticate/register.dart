@@ -1,10 +1,11 @@
 import 'package:PhilosophyToday/Services/auth.dart';
+import 'package:PhilosophyToday/Services/dataManager.dart';
+import 'package:PhilosophyToday/shared/imageSelector.dart';
 import 'package:PhilosophyToday/shared/loader.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
-import '../../main.dart';
 
 bool validateStructure(String value) {
   String pattern =
@@ -37,7 +38,6 @@ class _RegisterState extends State<Register> {
     TextEditingController passwordController = new TextEditingController();
     TextEditingController userNameController = new TextEditingController();
     TextEditingController emailController = new TextEditingController();
-    final defaultColor = Color.fromRGBO(255, 100, 100, 1);
     return loading ? Loader() : MaterialApp(
       home: Scaffold(
         body: Form(
@@ -74,17 +74,19 @@ class _RegisterState extends State<Register> {
                     ],
                   ),
                   child: FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await _auth.googleSignIn();
+                    },
                     child: Row(
                       children: <Widget>[
                         Image(
                             image: AssetImage("assets/images/googleLogo.png")),
                         Padding(
                           padding: EdgeInsets.only(
-                            left: 40,
+                            left: 20,
                           ),
                           child: Text(
-                            "Sign In With Google",
+                            "Register With Google",
                             style: GoogleFonts.getFont('Poppins',
                                 fontWeight: FontWeight.w300,
                                 color: Colors.indigoAccent,
@@ -97,12 +99,10 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               Container(
+                height: 200,
+                width: 100,
                 child: Center(
-                  child: Icon(
-                    MdiIcons.account,
-                    color: Colors.indigoAccent,
-                    size: 150,
-                  ),
+                  child:ImagePickerCustom(),
                 ),
               ),
               Container(
@@ -119,6 +119,7 @@ class _RegisterState extends State<Register> {
                 width: 10,
                 padding: EdgeInsets.only(left: 30, right: 40, top: 20),
                 child: TextFormField(
+
                   validator: (val) {
                     if (val.length > 4) {
                       return null;
@@ -232,16 +233,24 @@ class _RegisterState extends State<Register> {
                     child: FlatButton(
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
-                          setState(()=>loading=true);
-                          dynamic result =
-                              await _auth.registerWithEmailAndPassword(
-                                  emailController.text,
-                                  passwordController.text);
-                          if (result == null) {
-                            setState((){
-                              loading=false;
-                              error = 'please supply a valid email';
-                            });
+                          if (imageSelected) {
+                            setState(()=>loading=true);
+                            print("Image url "+imageUrl.toString());
+                            await saveUserDataEM(userNameController.text, emailController.text, imageUrl);
+                            dynamic result =
+                            await _auth.registerWithEmailAndPassword(
+                                emailController.text,
+                                passwordController.text,
+                            );
+                            if (result == null) {
+                              setState((){
+                                loading=false;
+                                error = 'Incorrect data please check the fields.';
+                              });
+                            }
+                          } else if (!imageSelected){
+                            loading=false;
+                            error="Please choose an image";
                           }
                         }
                       },

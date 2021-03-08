@@ -1,6 +1,5 @@
 import 'package:PhilosophyToday/models/user.dart';
 import 'package:PhilosophyToday/screens/authenticate/sign_in.dart';
-import 'package:PhilosophyToday/screens/home/HomePage.dart';
 import 'package:PhilosophyToday/screens/home/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

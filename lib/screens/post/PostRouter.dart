@@ -2,13 +2,12 @@ import 'dart:convert';
 
 import 'package:PhilosophyToday/screens/post/PostView.dart';
 import 'package:PhilosophyToday/screens/search/postSearch.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import "package:http/http.dart" as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:PhilosophyToday/main.dart' show currentTheme, setTheme;
+import 'package:PhilosophyToday/main.dart' show currentTheme;
 
 
 import '../tools/Style.dart';

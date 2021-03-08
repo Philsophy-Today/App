@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:PhilosophyToday/Services/dataManager.dart';
 import 'package:PhilosophyToday/screens/post/ListPost.dart';
 import 'package:PhilosophyToday/screens/tools/tools.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -120,6 +121,80 @@ class _MainBodyState extends State<MainBody> {
       padding: EdgeInsets.only(top: 20, bottom: 20),
       children: [
         SizedBox(
+          height: 100,
+          width: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                margin: EdgeInsets.only(top:20),
+                  width:200,
+                  child:Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FutureBuilder(
+                        future: getUserName(),
+                        builder: (BuildContext context,snapshot){
+                          if (snapshot.hasData){
+                            return  Text(
+                              "Hii "+snapshot.data.toString().split(" ")[0].capitalize(),
+                              style: Theme.of(context).textTheme.headline2,
+                            );
+                          } else {
+                            return  Text(
+                              "Hii Anonymous",
+                              style: Theme.of(context).textTheme.headline3,
+                            );
+                          }
+                        },
+                      ),
+                      Text("Welcome Back!",style: Theme.of(context).textTheme.headline1,)
+                    ],
+                  )
+              ),
+              SizedBox(
+                height: 80,
+                width: 80,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(50),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey[400],
+                        blurRadius: 20.0, // soften the shadow
+                        spreadRadius: 4.0, //extend the shadow
+                        offset: Offset(
+                          5.0, // Move to right 10  horizontally
+                          10.0, // Move to bottom 10 Vertically
+                        ),
+                      ),
+                    ],
+                  ),
+                  child: FutureBuilder(
+                    future: getUserImage(),
+                    builder: (BuildContext context, snapshot){
+                      if (snapshot.hasData){
+                        return ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.asset(snapshot.data,
+                              fit: BoxFit.cover),
+                        );
+                      } else {
+                        return ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: CachedNetworkImage(imageUrl:"https://via.placeholder.com/150",
+                              fit: BoxFit.cover,),
+                        );
+                      }
+                    },
+                  ),
+                )
+              )
+            ],
+          ),
+        ),
+        SizedBox(
           height: 300,
           child: Container(
             color: Color.fromRGBO(0, 0, 0, 0.1),
@@ -128,7 +203,7 @@ class _MainBodyState extends State<MainBody> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  margin: EdgeInsets.only(left: 20),
+                  margin: EdgeInsets.only(left: 20,top:10),
                   child: Text(
                     "Your Stories",
                     style: Theme.of(context).textTheme.headline2,
@@ -166,7 +241,7 @@ class _MainBodyState extends State<MainBody> {
                           child: SizedBox(
                               height: 50,
                               width: 50,
-                              child: CircularProgressIndicator()),
+                              child: CircularProgressIndicator(backgroundColor: Theme.of(context).hoverColor)),
                         );
                       }
                     },
@@ -206,7 +281,7 @@ class _MainBodyState extends State<MainBody> {
                   child: SizedBox(
                       height: 50,
                       width: 50,
-                      child: CircularProgressIndicator()),
+                      child: CircularProgressIndicator(backgroundColor: Theme.of(context).hoverColor)),
                 );
               }
             },
@@ -250,7 +325,7 @@ class _MainBodyState extends State<MainBody> {
                   child: SizedBox(
                       height: 50,
                       width: 50,
-                      child: CircularProgressIndicator()),
+                      child: CircularProgressIndicator(backgroundColor: Theme.of(context).hoverColor)),
                 );
               }
             },
@@ -280,7 +355,7 @@ class _MainBodyState extends State<MainBody> {
                     return PostCard(
                       first: first,
                       title: unescape.convert(wpPost['title']['rendered'].toString()),
-                      subtitle: wpPost['excerpt']['rendered'],
+                      subtitle: unescape.convert(wpPost['excerpt']['rendered'].toString()),
                       imageUrl: wpPost['featured_image_urls']['large'][0],
                       slug: wpPost["slug"],
                     );
@@ -291,7 +366,7 @@ class _MainBodyState extends State<MainBody> {
                   child: SizedBox(
                       height: 50,
                       width: 50,
-                      child: CircularProgressIndicator()),
+                      child: CircularProgressIndicator(backgroundColor: Theme.of(context).hoverColor)),
                 );
               }
             },
@@ -422,7 +497,6 @@ class PostCard extends StatelessWidget {
     }
     String subtitleData = subtitle.replaceAll("<p>", "");
     subtitleData = subtitleData.replaceAll("</p>", "");
-    double varTitleFontSize = 20;
     return GestureDetector(
       onTap: () {
         Navigator.push(

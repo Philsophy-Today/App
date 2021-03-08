@@ -1,11 +1,9 @@
 import 'package:PhilosophyToday/Services/auth.dart';
-import 'package:PhilosophyToday/screens/authenticate/register.dart';
 import 'package:PhilosophyToday/shared/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:PhilosophyToday/main.dart' show currentTheme, setTheme, isDarkModeEnabled;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import '../tools/Style.dart';
+
 
 
 bool validateStructure(String value){
@@ -36,7 +34,6 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     TextEditingController passwordController = new TextEditingController();
     TextEditingController emailController = new TextEditingController();
-    final defaultColor = Color.fromRGBO(255, 100 , 100, 1);
     return loading ? Loader() : MaterialApp(
       home: Scaffold(
           body: Form(
@@ -72,7 +69,9 @@ class _SignInState extends State<SignIn> {
                       ],
                     ),
                     child: FlatButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await _auth.googleSignIn();
+                      },
                       child: Row(
                         children: <Widget>[
                           Image(
@@ -179,12 +178,11 @@ class _SignInState extends State<SignIn> {
                           ],
                         ),
                         child:FlatButton(
-                          // color: Theme.of(context).primaryColorDark,
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
                               setState(()=>loading=true);
                               dynamic result = await _auth.signInWithEmailAndPassword(emailController.text, passwordController.text);
-                              if (result==null){
+                              if (result==null) {
                                 setState((){
                                   error='Wrong credentials.';
                                   loading=false;

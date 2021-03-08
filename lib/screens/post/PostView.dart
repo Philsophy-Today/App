@@ -1,16 +1,11 @@
 import 'dart:convert';
 
+import 'package:PhilosophyToday/Services/dataManager.dart';
 import 'package:PhilosophyToday/screens/tools/tools.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'dart:io';
-
-import 'package:expandable/expandable.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
 import "package:http/http.dart" as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
@@ -34,38 +29,6 @@ Future<String> fetchDescription(String username) async {
   return "";
 }
 
-void postViewed(String title,
-    String featuredImage,String subtitle, String textData, String shortLink,
-    String tags, String category, String authorName, String authorEmail,
-    String authorImage, String authorDescription,) async {
-  try{
-    var box = await Hive.openBox("websiteData");
-    var oldData=box.get("websiteData");
-    if (oldData is Map){
-      if (oldData==null){
-        await box.put("websiteData",[]);
-      }else{
-        await box.put("websiteData",[oldData]);
-      }
-    }
-    if (oldData==null){
-      await box.put("websiteData",[]);
-    }
-    eprint(oldData);
-    List oldData2 = box.get("websiteData");
-    eprint(oldData2);
-    Map data={
-      "title":title,
-      "featuredImage":featuredImage,"subtitle":subtitle, "textData":textData, "shortLink":shortLink,
-      "tags":tags, "category":category, "authorName":authorName, "authorEmail":authorEmail,
-      "authorImage":authorImage, "authorDescription":authorDescription,
-    };
-    oldData2.add(data);
-    await box.put("viewedPostData",oldData2);
-  }catch(e){
-    debugPrint(e.toString());
-  }
-}
 
 class PostView extends StatelessWidget {
   final String title;

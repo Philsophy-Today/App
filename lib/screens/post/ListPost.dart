@@ -30,17 +30,7 @@ class PostList extends StatelessWidget {
         appBar: AppBar(
           elevation: 0,
           // toolbarHeight: 50,
-          leading: Container(
-            // margin: EdgeInsets.only(top:10),
-            child: IconButton(
-              icon: Icon(
-                Icons.menu,
-                size: 40,
-                color: Colors.indigoAccent,
-              ), // change this size and style
-              onPressed: () => _scaffoldKey.currentState.openDrawer(),
-            ),
-          ),
+          leading: BackButton(onPressed: () => Navigator.of(context).pop(),),
           actions: [
             Container(
               // margin: EdgeInsets.only(top:5),
@@ -51,54 +41,6 @@ class PostList extends StatelessWidget {
               ),
             ),
           ],
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(right: 10, top: 20),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(50))),
-                      width: 100,
-                      height: 100,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                        child: Image.asset("assets/Icon/icon.png",fit: BoxFit.cover,),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              ListTile(
-                leading: Icon(MdiIcons.web),
-                title: const Text("Visit Website"),
-                onTap: () async {
-                  await launch("https://philosophytoday.in");
-                },
-              ),
-              ListTile(
-                leading: Icon(MdiIcons.account),
-                title: const Text("Request for a contributor"),
-                onTap: () async {
-                  await launch(
-                      "https://philosophytoday.in/online-internship-philosophy-today/");
-                },
-              ),
-              ListTile(
-                leading: Icon(MdiIcons.pen),
-                title: const Text("Essay Competition"),
-                onTap: () async {
-                  await launch(
-                      "https://philosophytoday.in/2nd-philosophy-today-essay-competition-2021/");
-                },
-              ),
-            ],
-          ),
         ),
         body: Builder(builder: (context) {
           if (type == "tags") {
@@ -521,8 +463,19 @@ class PostCard extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     child: CachedNetworkImage(
+                      placeholder: (context, url){
+                        return Container(
+                          child:Center(
+                            child: SizedBox(
+                              width: 50,
+                                height: 50,
+                              child: CircularProgressIndicator(backgroundColor: Theme.of(context).hoverColor),
+                            ),
+                          )
+                        );
+                      },
                       imageUrl: imageUrl,
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),

@@ -1,54 +1,79 @@
 import 'dart:convert';
-
-import 'package:PhilosophyToday/ListPost.dart';
-import 'package:PhilosophyToday/postSearch.dart';
-import 'package:PhilosophyToday/tools.dart';
+import 'package:PhilosophyToday/screens/post/ListPost.dart';
+import 'package:PhilosophyToday/screens/tools/tools.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 import 'package:html_unescape/html_unescape.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:hive/hive.dart';
 
 import 'dart:math';
-import 'PostRouter.dart';
+import '../post/PostRouter.dart';
 
 bool loginAccepted = true;
-final _scaffoldKey = new GlobalKey<ScaffoldState>();
 var unescape = new HtmlUnescape();
 Future<List> fetchPosts() async {
-  final response = await http.get(
-      "http://philosophytoday.in/wp-json/wp/v2/posts?per_page=20",
-      headers: {"Accept": "application/json"});
-  var convertData = jsonDecode(response.body);
-  return convertData;
+  var box = await Hive.openBox("websiteData");
+  try{
+    final response = await http.get(
+        "http://philosophytoday.in/wp-json/wp/v2/posts?per_page=20",
+        headers: {"Accept": "application/json"});
+    var convertData=jsonDecode(response.body);
+    box.put("postsData",convertData);
+    return convertData;
+  }catch(e){
+    final convertData=box.get("postsData");
+    return convertData;
+  }
 }
 
 Future<List> fetchHighlight() async {
-  final response = await http.get(
-      "http://philosophytoday.in/wp-json/wp/v2/posts?categories=5&&per_page=5",
-      headers: {"Accept": "application/json"});
-  var convertData = jsonDecode(response.body);
-  return convertData;
+  var box = await Hive.openBox("websiteData");
+  try{
+    final response = await http.get(
+        "http://philosophytoday.in/wp-json/wp/v2/posts?categories=5&&per_page=5",
+        headers: {"Accept": "application/json"});
+    var convertData=jsonDecode(response.body);
+    box.put("highlightData",convertData);
+    return convertData;
+  }catch(e){
+    final convertData=box.get("highlightData");
+    return convertData;
+  }
 }
 
 Future<List> fetchTags() async {
-  final response = await http.get(
-      "http://philosophytoday.in/wp-json/wp/v2/tags?per_page=10",
-      headers: {"Accept": "application/json"});
-  var convertData = jsonDecode(response.body);
-  return convertData;
+  var box = await Hive.openBox("websiteData");
+  try{
+    final response = await http.get(
+        "http://philosophytoday.in/wp-json/wp/v2/tags?per_page=10",
+        headers: {"Accept": "application/json"});
+    var convertData=jsonDecode(response.body);
+    box.put("fetchedTagsData",convertData);
+    return convertData;
+  }catch(e){
+    final convertData=box.get("fetchedTagsData");
+    return convertData;
+  }
 }
 
 Future<List> fetchCategories() async {
-  final response = await http.get(
-      "http://philosophytoday.in/wp-json/wp/v2/categories",
-      headers: {"Accept": "application/json"});
-  var convertData = jsonDecode(response.body);
-  return convertData;
+  var box = await Hive.openBox("websiteData");
+  try{
+    final response = await http.get(
+        "http://philosophytoday.in/wp-json/wp/v2/categories",
+        headers: {"Accept": "application/json"});
+    var convertData=jsonDecode(response.body);
+    box.put("fetchedCategoriesData",convertData);
+    return convertData;
+  }catch(e){
+    final convertData=box.get("fetchedCategoriesData");
+    return convertData;
+  }
 }
 
 random(min, max) {
@@ -74,124 +99,13 @@ List randomColors() {
   }
   return [Color.fromRGBO(r, g, b, 1), Color.fromRGBO(tr, tg, tb, 1)];
 }
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: CustomAppBar());
+List buildColorList(length){
+  List data=[];
+  for(int i=0;i<length;i++){
+    List colors = randomColors();
+    data.add(colors);
   }
-}
-
-class CustomAppBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        // flexibleSpace: Container(
-        //   decoration: BoxDecoration(
-        //     gradient: LinearGradient(
-        //       begin:Alignment.topRight,
-        //       end:Alignment.bottomLeft,
-        //       colors: [Color.fromRGBO(240, 147, 251,1),Color.fromRGBO(245, 87, 108, 1)]
-        //     ),
-        //     // image:DecorationImage(
-        //     //   image:NetworkImage("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1351&q=80"),
-        //     //   fit: BoxFit.cover,
-        //     // )
-        //   ),
-        // ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        // toolbarHeight: 50,
-        leading: Container(
-          // margin: EdgeInsets.only(top:10),
-          child: IconButton(
-            icon: Icon(
-              Icons.menu,
-              size: 40,
-              color: Color.fromRGBO(240, 147, 251,1),
-            ), // change this size and style
-            onPressed: () => _scaffoldKey.currentState.openDrawer(),
-          ),
-        ),
-        actions: [
-          Container(
-            // margin: EdgeInsets.only(top:5),
-            child: IconButton(
-              icon: Icon(Icons.search, color: Color.fromRGBO(240, 147, 251,1)),
-              iconSize: 50,
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => Search()));
-              },
-            ),
-          ),
-        ],
-        actionsIconTheme: IconThemeData(
-          color: Color.fromRGBO(240, 147, 251,1),
-        ),
-      ),
-      backgroundColor: Colors.white,
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(right: 10, top: 20),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 10,
-                          )
-                        ],
-                        borderRadius: BorderRadius.all(Radius.circular(50))),
-                    width: 100,
-                    height: 100,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                      child: CachedNetworkImage(
-                        fit: BoxFit.fill,
-                        imageUrl:
-                            "https://philosophytoday.in/wp-content/uploads/2021/01/cropped-cropped-Untitled-14-1.png",
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            ListTile(
-              leading: Icon(MdiIcons.web),
-              title: Text("Visit Website"),
-              onTap: () async {
-                await launch("https://philosophytoday.in");
-              },
-            ),
-            ListTile(
-              leading: Icon(MdiIcons.account),
-              title: Text("Request for a contributor"),
-              onTap: () async {
-                await launch("https://philosophytoday.in/online-internship-philosophy-today/");
-              },
-            ),
-            ListTile(
-              leading:Icon(MdiIcons.pen),
-              title: Text("Essay Competition"),
-              onTap: () async {
-                await launch("https://philosophytoday.in/2nd-philosophy-today-essay-competition-2021/");
-              },
-            ),
-          ],
-        ),
-      ),
-      body: MainBody(),
-    );
-  }
+  return data;
 }
 
 class MainBody extends StatefulWidget {
@@ -206,7 +120,7 @@ class _MainBodyState extends State<MainBody> {
       padding: EdgeInsets.only(top: 20, bottom: 20),
       children: [
         SizedBox(
-          height: 260,
+          height: 300,
           child: Container(
             color: Color.fromRGBO(0, 0, 0, 0.1),
             child: Column(
@@ -217,15 +131,11 @@ class _MainBodyState extends State<MainBody> {
                   margin: EdgeInsets.only(left: 20),
                   child: Text(
                     "Your Stories",
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Color.fromRGBO(0, 0, 0, 0.4),
-                    ),
+                    style: Theme.of(context).textTheme.headline2,
                   ),
                 ),
                 Container(
-                  height: 230,
+                  height: 260,
                   child: FutureBuilder(
                     future: fetchHighlight(),
                     builder: (context, snapshot) {
@@ -243,10 +153,7 @@ class _MainBodyState extends State<MainBody> {
                             Map wpPost = snapshot.data[index];
                             return CardWidget(
                               first: first,
-                              title: unescape
-                                  .convert(
-                                      wpPost['title']['rendered'].toString())
-                                  .truncateTo(20),
+                              title: unescape.convert(wpPost['title']['rendered'].toString()).truncateTo(50),
                               imageUrl: wpPost['featured_image_urls']['large']
                                   [0],
                               slug: wpPost["slug"],
@@ -271,14 +178,8 @@ class _MainBodyState extends State<MainBody> {
         ),
         Container(
           padding: EdgeInsets.only(left: 20, top: 20),
-          child: Text(
-            "Popular Tags",
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: Colors.grey,
-            ),
-          ),
+          child: Text("Popular Tags",
+              style: Theme.of(context).textTheme.headline2),
         ),
         Container(
           height: 150,
@@ -287,6 +188,7 @@ class _MainBodyState extends State<MainBody> {
             future: fetchTags(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                List colors = buildColorList(snapshot.data.length);
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: snapshot.data.length,
@@ -294,7 +196,9 @@ class _MainBodyState extends State<MainBody> {
                     Map wpPost = snapshot.data[index];
                     return TagBox(
                         tagText: unescape
-                            .convert(wpPost["name"].toString().capitalize()));
+                            .convert(wpPost["name"].toString().capitalize()),
+                    colors: colors[index],
+                    );
                   },
                 );
               } else {
@@ -310,14 +214,8 @@ class _MainBodyState extends State<MainBody> {
         ),
         Container(
           padding: EdgeInsets.only(left: 20, top: 20),
-          child: Text(
-            "Trending Topics",
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: Colors.grey,
-            ),
-          ),
+          child: Text("Trending Topics",
+              style: Theme.of(context).textTheme.headline2),
         ),
         Container(
           height: 150,
@@ -338,6 +236,9 @@ class _MainBodyState extends State<MainBody> {
                         .where((e) => e.attributes.containsKey('src'))
                         .map((e) => e.attributes['src'])
                         .toList();
+                    if (imageElement.length == 0){
+                      imageElement.add("https://via.placeholder.com/250");
+                    }
                     return ImageTagBox(
                       imageUrl: imageElement[0],
                       tagText: unescape.convert(wpPost["name"]),
@@ -355,7 +256,9 @@ class _MainBodyState extends State<MainBody> {
             },
           ),
         ),
-        Divider(),
+        SizedBox(
+          height: 50,
+        ),
         Container(
           margin: EdgeInsets.only(top: 20),
           height: 420,
@@ -376,8 +279,7 @@ class _MainBodyState extends State<MainBody> {
                     Map wpPost = snapshot.data[index];
                     return PostCard(
                       first: first,
-                      title: unescape
-                          .convert(wpPost['title']['rendered'].toString()),
+                      title: unescape.convert(wpPost['title']['rendered'].toString()),
                       subtitle: wpPost['excerpt']['rendered'],
                       imageUrl: wpPost['featured_image_urls']['large'][0],
                       slug: wpPost["slug"],
@@ -395,7 +297,6 @@ class _MainBodyState extends State<MainBody> {
             },
           ),
         ),
-        Divider(),
       ],
     );
   }
@@ -403,7 +304,8 @@ class _MainBodyState extends State<MainBody> {
 
 class TagBox extends StatelessWidget {
   final String tagText;
-  TagBox({this.tagText});
+  final List colors;
+  TagBox({this.tagText,this.colors});
   @override
   Widget build(BuildContext context) {
     double varFontSize = 13;
@@ -414,7 +316,6 @@ class TagBox extends StatelessWidget {
     } else {
       varFontSize = 10;
     }
-    List a = randomColors();
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -430,12 +331,8 @@ class TagBox extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.only(right: 10, top: 20, bottom: 20),
         padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            color: a[0],
-            blurRadius: 10,
-          )
-        ], color: a[0], borderRadius: BorderRadius.all(Radius.circular(20))),
+        decoration: BoxDecoration(
+            color: colors[0], borderRadius: BorderRadius.all(Radius.circular(20))),
         child: Center(
           child: Text(
             "#" + tagText,
@@ -443,7 +340,7 @@ class TagBox extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: varFontSize,
               fontWeight: FontWeight.w800,
-              color: a[1],
+              color: colors[1],
             ),
           ),
         ),
@@ -480,13 +377,6 @@ class ImageTagBox extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(right: 10, top: 20),
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 10,
-                    )
-                  ],
                   borderRadius: BorderRadius.all(Radius.circular(50))),
               width: 100,
               height: 100,
@@ -503,11 +393,7 @@ class ImageTagBox extends StatelessWidget {
                 tagText,
                 textAlign: TextAlign.center,
                 softWrap: true,
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: Theme.of(context).textTheme.headline2,
               ),
             )
           ],
@@ -552,6 +438,7 @@ class PostCard extends StatelessWidget {
         // height: 450,
         child: Card(
           elevation: 20,
+          shadowColor: Theme.of(context).shadowColor,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
           child: Column(
@@ -563,29 +450,21 @@ class PostCard extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   child: CachedNetworkImage(
                     imageUrl: imageUrl,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
               Container(
                 margin:
                     EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
-                child: Text(
-                  title.truncateTo(50),
-                  style: GoogleFonts.poppins(
-                    color: Colors.grey,
-                    fontSize: varTitleFontSize,
-                  ),
-                ),
+                child: Text(title.truncateTo(45),
+                    style: Theme.of(context).textTheme.headline2),
               ),
               Container(
                 margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                 child: Text(
                   subtitleData.truncateTo(80),
-                  style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: Color.fromRGBO(0, 0, 0, 0.8)),
+                  style: Theme.of(context).textTheme.headline4,
                 ),
               ),
             ],
@@ -615,7 +494,7 @@ class CardWidget extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(left: leftVar, right: 20, bottom: 20),
       width: 250,
-      height: 150,
+      height: 200,
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -628,6 +507,7 @@ class CardWidget extends StatelessWidget {
           );
         },
         child: Card(
+          shadowColor: Theme.of(context).shadowColor,
           elevation: 20,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -644,12 +524,11 @@ class CardWidget extends StatelessWidget {
                     ),
                     child: CachedNetworkImage(
                       imageUrl: imageUrl,
-                      fit: BoxFit.fill,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                      fit: BoxFit.cover,
+                      progressIndicatorBuilder: (context, url, downloadProgress) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
                           SizedBox(
                             width: 50,
                             height: 50,
@@ -661,12 +540,7 @@ class CardWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text(
-                  title,
-                  style: GoogleFonts.poppins(
-                    color: Color.fromRGBO(0, 0, 0, 1),
-                  ),
-                ),
+                Text(title, style: Theme.of(context).textTheme.headline4),
               ],
             ),
           ),

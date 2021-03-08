@@ -31,13 +31,23 @@ dependencies:
   flappy_search_bar: ^1.7.2
   expandable: ^4.1.4
   flutter_launcher_icons: ^0.8.1
-  firebase_messaging: ^7.0.3
+  firebase_auth: ^0.14.0+5
+  firebase_core:
+  firebase_analytics:
+  google_sign_in:
+  cloud_firestore:
   hive: ^1.4.4+1
   hive_flutter: ^0.3.1
   path_provider: ^1.6.27
   html_unescape: ^1.0.2
+  provider: ^3.1.0
   share: ^0.6.5+4
   url_launcher: ^5.7.10
+  dio: 3.0.10
+  day_night_switcher: ^0.1.1+1
+  google_nav_bar: ^4.0.2
+  flutter_spinkit: ^4.0.0
+  animated_bottom_navigation_bar: ^0.2.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
 
@@ -67,6 +77,9 @@ flutter:
     - assets/images/noSearch.png
     - assets/images/notFound.png
     - assets/images/search.png
+    - assets/Icon/icon.png
+    - assets/images/user.png
+    - assets/images/googleLogo.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

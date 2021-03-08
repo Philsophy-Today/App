@@ -5,11 +5,14 @@ import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:PhilosophyToday/tools.dart';
+import 'package:PhilosophyToday/screens/tools/tools.dart';
+import 'package:PhilosophyToday/main.dart' show currentTheme, setTheme;
 
-import 'PostRouter.dart';
+import '../post/PostRouter.dart';
+import '../tools/Style.dart';
 
 class Post {
   final String title;
@@ -25,25 +28,10 @@ class Search extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return MaterialApp(
-      home: Stack(
-        children: [
-          Container(
-            height: height,
-            width: double.maxFinite,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                    width: 200,
-                    height: 200,
-                    child: Image(image:AssetImage("assets/image/search.png"))),
-              ],
-            ),
-          ),
-          Home(),
-        ],
-      ),
+      themeMode: currentTheme,
+      darkTheme: darkTheme,
+      theme:lightTheme,
+      home: Home(),
     );
   }
 }
@@ -87,6 +75,7 @@ class _HomeState extends State<Home> {
   }
   @override
   Widget build(BuildContext context) {
+    var unescape = new HtmlUnescape();
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
@@ -96,6 +85,7 @@ class _HomeState extends State<Home> {
           headerPadding: EdgeInsets.symmetric(horizontal: 10),
           listPadding: EdgeInsets.symmetric(horizontal: 10),
           onSearch: fetchCategories,
+          textStyle: Theme.of(context).textTheme.headline3,
           icon:Icon(Icons.search,color: Colors.redAccent,),
           placeHolder: Container(
             height: height,
@@ -107,11 +97,14 @@ class _HomeState extends State<Home> {
                 SizedBox(
                     width: 200,
                     height: 200,
-                    child: Image(image:AssetImage("assets/image/search.png"))),
+                    child: Image(image:AssetImage("assets/image/search.png"),
+                    ),
+                ),
               ],
             ),
           ),
           searchBarStyle: SearchBarStyle(
+
             borderRadius: BorderRadius.only(
               topLeft:Radius.circular(30),
               bottomRight:Radius.circular(30),
@@ -126,12 +119,6 @@ class _HomeState extends State<Home> {
             decoration: BoxDecoration(
               color: Colors.redAccent,
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  blurRadius: 30,
-                ),
-              ],
             ),
               child: Text(
                   "Cancel",
@@ -177,31 +164,29 @@ class _HomeState extends State<Home> {
           onItemFound: (Post post, int index) {
             print(post.title);
             print(post.body);
+
             return Container(
               margin: EdgeInsets.all(0),
               decoration: BoxDecoration(
-                  color: Colors.white,
+                color: Color.fromRGBO(0, 0, 0, 0.2),
                 borderRadius: BorderRadius.all(Radius.circular(20)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 30,
-                  )
-                ]
               ),
               child: ListTile(
-                contentPadding: EdgeInsets.all(10),
+                contentPadding: EdgeInsets.only(left: 10,right: 10,top:5,bottom: 5),
                 leading:SizedBox(
-                    width:110,
-                    height:100,
-                    child: CachedNetworkImage(
-                        imageUrl:post.imageUrl,
-                      fit: BoxFit.fill,
+                    width:100,
+                    height:150,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: CachedNetworkImage(
+                          imageUrl:post.imageUrl,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                 ),
-                title: Text(post.title),
+                title: Text(unescape.convert(post.title).truncateTo(60)),
                 isThreeLine: true,
-                subtitle: Text(post.body.truncateTo(80)),
+                subtitle: Text(post.body.truncateTo(40)),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostRouter(type:["slugBased",post.slug])));
                 },

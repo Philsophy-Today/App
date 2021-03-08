@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:PhilosophyToday/postSearch.dart';
-import 'package:PhilosophyToday/tools.dart';
+import 'file:///F:/FlutterProjects/Philosophy_Today/PhilosophyToday/lib/screens/search/postSearch.dart';
+import 'file:///F:/FlutterProjects/Philosophy_Today/PhilosophyToday/lib/screens/tools/tools.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

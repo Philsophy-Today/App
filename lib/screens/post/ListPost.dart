@@ -1,11 +1,17 @@
 import 'dart:convert';
 
-import 'package:PhilosophyToday/PostRouter.dart';
+import '../post/PostRouter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:PhilosophyToday/tools.dart';
+import '../tools/tools.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:PhilosophyToday/main.dart' show currentTheme, setTheme;
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:html_unescape/html_unescape.dart';
+
+import '../tools/Style.dart';
 
 final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -13,14 +19,15 @@ class PostList extends StatelessWidget {
   final String type;
   final String slug;
   PostList({this.type, this.slug});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      darkTheme: darkTheme,
+      theme:lightTheme,
+      themeMode: currentTheme,
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          backgroundColor: Colors.white,
           elevation: 0,
           // toolbarHeight: 50,
           leading: Container(
@@ -29,7 +36,7 @@ class PostList extends StatelessWidget {
               icon: Icon(
                 Icons.menu,
                 size: 40,
-                color: Colors.black87,
+                color: Colors.indigoAccent,
               ), // change this size and style
               onPressed: () => _scaffoldKey.currentState.openDrawer(),
             ),
@@ -38,17 +45,13 @@ class PostList extends StatelessWidget {
             Container(
               // margin: EdgeInsets.only(top:5),
               child: IconButton(
-                icon: Icon(Icons.search, color: Colors.black87),
+                icon: Icon(Icons.search),
                 iconSize: 50,
                 onPressed: () {},
               ),
             ),
           ],
-          actionsIconTheme: IconThemeData(
-            color: Colors.black,
-          ),
         ),
-        backgroundColor: Colors.white,
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -60,35 +63,39 @@ class PostList extends StatelessWidget {
                       margin: EdgeInsets.only(right: 10, top: 20),
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey,
-                              blurRadius: 10,
-                            )
-                          ],
                           borderRadius: BorderRadius.all(Radius.circular(50))),
                       width: 100,
                       height: 100,
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
-                        child: CachedNetworkImage(
-                          fit: BoxFit.fill,
-                          imageUrl:
-                              "https://philosophytoday.in/wp-content/uploads/2021/01/cropped-cropped-Untitled-14-1.png",
-                        ),
+                        child: Image.asset("assets/Icon/icon.png",fit: BoxFit.cover,),
                       ),
                     ),
                   ],
                 ),
               ),
               ListTile(
-                title: Text("Visit Website"),
+                leading: Icon(MdiIcons.web),
+                title: const Text("Visit Website"),
+                onTap: () async {
+                  await launch("https://philosophytoday.in");
+                },
               ),
               ListTile(
-                title: Text("Request for a contributor"),
+                leading: Icon(MdiIcons.account),
+                title: const Text("Request for a contributor"),
+                onTap: () async {
+                  await launch(
+                      "https://philosophytoday.in/online-internship-philosophy-today/");
+                },
               ),
               ListTile(
-                title: Text("Alpha"),
+                leading: Icon(MdiIcons.pen),
+                title: const Text("Essay Competition"),
+                onTap: () async {
+                  await launch(
+                      "https://philosophytoday.in/2nd-philosophy-today-essay-competition-2021/");
+                },
               ),
             ],
           ),
@@ -115,6 +122,7 @@ class TagList extends StatefulWidget {
 
   @override
   _TagListState createState() => _TagListState();
+
 }
 
 class _TagListState extends State<TagList> {
@@ -190,7 +198,10 @@ class _TagListState extends State<TagList> {
                                     color: Colors.grey,
                                     blurRadius: 50,
                                   )
-                                ]))),
+                                ],
+                            ),
+                        ),
+                    ),
                   ],
                 ),
               ),
@@ -295,7 +306,10 @@ class _CategoryListState extends State<CategoryList> {
                                     color: Colors.grey,
                                     blurRadius: 50,
                                   )
-                                ]))),
+                                ],
+                            ),
+                        ),
+                    ),
                   ],
                 ),
               ),
@@ -478,6 +492,7 @@ class PostCard extends StatelessWidget {
     }
     String subtitleData = subtitle.replaceAll("<p>", "");
     subtitleData = subtitleData.replaceAll("</p>", "");
+    var unescape = new HtmlUnescape();
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       width: 310,
@@ -515,22 +530,16 @@ class PostCard extends StatelessWidget {
                   margin:
                       EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
                   child: Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey,
-                      fontSize: 20,
-                    ),
+                      unescape.convert(title),
+                    style: Theme.of(context).textTheme.headline2
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                   child: Text(
                     subtitleData.truncateTo(100),
-                    style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Color.fromRGBO(0, 0, 0, 0.8)),
-                  ),
+                    style: Theme.of(context).textTheme.headline4
+                  )
                 ),
               ],
             ),

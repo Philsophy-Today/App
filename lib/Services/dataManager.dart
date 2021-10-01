@@ -63,3 +63,12 @@ void postViewed(String title,
     debugPrint(e.toString());
   }
 }
+
+Future saveData(dataName,value) async{
+  var box = await Hive.openBox("appData");
+  box.put(dataName, value);
+}
+Future getData(dataName)async {
+  var box = await Hive.openBox("appData");
+  return box.get(dataName);
+}

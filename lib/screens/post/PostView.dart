@@ -6,14 +6,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:html_unescape/html_unescape.dart';
 import "package:http/http.dart" as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:html_unescape/html_unescape.dart';
-
-
-
 
 Future<String> fetchDescription(String username) async {
   final response2 = await http.get(
@@ -29,7 +26,6 @@ Future<String> fetchDescription(String username) async {
   return "";
 }
 
-
 class PostView extends StatelessWidget {
   final String title;
   final String featuredImage;
@@ -42,20 +38,20 @@ class PostView extends StatelessWidget {
   final String authorEmail;
   final String authorImage;
   final String authorDescription;
-
-  PostView({
-    this.title,
-    this.subtitle,
-    this.featuredImage,
-    this.shortLink,
-    this.textData,
-    this.tags,
-    this.authorEmail,
-    this.authorImage,
-    this.authorName,
-    this.category,
-    this.authorDescription,
-  });
+  final String slug;
+  PostView(
+      {this.title,
+      this.subtitle,
+      this.featuredImage,
+      this.shortLink,
+      this.textData,
+      this.tags,
+      this.authorEmail,
+      this.authorImage,
+      this.authorName,
+      this.category,
+      this.authorDescription,
+      this.slug});
   @override
   Widget build(BuildContext context) {
     postViewed(
@@ -69,63 +65,66 @@ class PostView extends StatelessWidget {
       authorImage,
       authorName,
       category,
-      authorDescription,);
-    return Material(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(10),
-        child: Container(
-          child: Column(
-            children: [
-              Container(
-                height: 80,
-                color: Theme.of(context).primaryColor,
-                width: double.maxFinite,
-                margin: EdgeInsets.only(bottom: 20),
-                padding: EdgeInsets.all(10),
-                child: ListTile(
-                  leading: CachedNetworkImage(
-                    width: 50,
-                    imageUrl: authorImage,
-                  ),
-                  title: Text("Author:  " + authorName,
+      authorDescription,
+    );
+    return Hero(
+      tag: slug,
+      child: Material(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(10),
+          child: Container(
+            child: Column(
+              children: [
+                Container(
+                  height: 80,
+                  color: Theme.of(context).primaryColor,
+                  width: double.maxFinite,
+                  margin: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.all(10),
+                  child: ListTile(
+                    leading: CachedNetworkImage(
+                      width: 50,
+                      imageUrl: authorImage,
+                    ),
+                    title: Text(
+                      "Author:  " + authorName,
                       style: Theme.of(context).textTheme.headline2,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     blurRadius: 20,
-                  //     color: Theme.of(context).shadowColor,
-                  //   )
-                  // ],
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: CachedNetworkImage(
-                    imageUrl: featuredImage,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CachedNetworkImage(
+                      imageUrl: featuredImage,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 20),
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 20,
-                      color: Theme.of(context).shadowColor,
-                    )
-                  ],
-                  color:Theme.of(context).primaryColor,
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 20,
+                        color: Theme.of(context).shadowColor,
+                      )
+                    ],
+                    color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                child:PostData(title:title,textData: textData,shortLink: shortLink,),
-              )
-            ],
+                  ),
+                  child: PostData(
+                    title: title,
+                    textData: textData,
+                    shortLink: shortLink,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -137,7 +136,7 @@ class PostData extends StatelessWidget {
   final String textData;
   final String title;
   final String shortLink;
-  PostData({this.title,this.textData,this.shortLink});
+  PostData({this.title, this.textData, this.shortLink});
   @override
   Widget build(BuildContext context) {
     var unescape = new HtmlUnescape();
@@ -156,7 +155,9 @@ class PostData extends StatelessWidget {
           },
         ),
         Divider(),
-        ShareButtons(shortLink: shortLink,),
+        ShareButtons(
+          shortLink: shortLink,
+        ),
       ],
     );
   }
@@ -168,24 +169,24 @@ class ShareButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         Share.share('Check out this post from philosophy today: $shortLink');
       },
       child: Container(
-        padding: EdgeInsets.only(top:10,bottom:10),
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(0,0, 0, 0.3),
-          borderRadius: BorderRadius.all(Radius.circular(50))
-        ),
-        width: double.maxFinite,
-        child:Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(MdiIcons.share,),
-            Text("Share",style:Theme.of(context).textTheme.headline3),
-          ],
-        )
-      ),
+          padding: EdgeInsets.only(top: 10, bottom: 10),
+          decoration: BoxDecoration(
+              color: Color.fromRGBO(0, 0, 0, 0.3),
+              borderRadius: BorderRadius.all(Radius.circular(50))),
+          width: double.maxFinite,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                MdiIcons.share,
+              ),
+              Text("Share", style: Theme.of(context).textTheme.headline3),
+            ],
+          )),
     );
   }
 }

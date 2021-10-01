@@ -1,17 +1,15 @@
 import 'dart:convert';
 
-import '../post/PostRouter.dart';
+import 'package:PhilosophyToday/main.dart' show currentTheme, setTheme;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import '../tools/tools.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:PhilosophyToday/main.dart' show currentTheme, setTheme;
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:http/http.dart' as http;
 
+import '../post/PostRouter.dart';
 import '../tools/Style.dart';
+import '../tools/tools.dart';
 
 final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -21,40 +19,52 @@ class PostList extends StatelessWidget {
   PostList({this.type, this.slug});
   @override
   Widget build(BuildContext context) {
+    void backToHome() {
+      Navigator.pop(context);
+    }
+
     return MaterialApp(
-      darkTheme: darkTheme,
-      theme:lightTheme,
-      themeMode: currentTheme,
-      home: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          elevation: 0,
-          // toolbarHeight: 50,
-          leading: BackButton(onPressed: () => Navigator.of(context).pop(),),
-          actions: [
-            Container(
-              // margin: EdgeInsets.only(top:5),
-              child: IconButton(
-                icon: Icon(Icons.search),
-                iconSize: 50,
-                onPressed: () {},
+        darkTheme: darkTheme,
+        theme: lightTheme,
+        themeMode: currentTheme,
+        home: Builder(
+          builder: (context) {
+            return Scaffold(
+              key: _scaffoldKey,
+              appBar: AppBar(
+                backgroundColor: Theme.of(context).primaryColorDark,
+                elevation: 0,
+                // toolbarHeight: 50,
+                leading: BackButton(
+                  color: Colors.white,
+                  onPressed: () => backToHome(),
+                ),
+                actions: [
+                  Container(
+                    // margin: EdgeInsets.only(top:5),
+                    child: IconButton(
+                      icon: Icon(Icons.search),
+                      color: Colors.white,
+                      iconSize: 50,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-        body: Builder(builder: (context) {
-          if (type == "tags") {
-            return TagList(tags: slug);
-          } else if (type == "categories") {
-            return CategoryList(tags: slug);
-          } else if (type == "posts") {
-            return PostsList();
-          } else {
-            return HotPostList();
-          }
-        }),
-      ),
-    );
+              body: Builder(builder: (context) {
+                if (type == "tags") {
+                  return TagList(tags: slug);
+                } else if (type == "categories") {
+                  return CategoryList(tags: slug);
+                } else if (type == "posts") {
+                  return PostsList();
+                } else {
+                  return HotPostList();
+                }
+              }),
+            );
+          },
+        ));
   }
 }
 
@@ -64,7 +74,6 @@ class TagList extends StatefulWidget {
 
   @override
   _TagListState createState() => _TagListState();
-
 }
 
 class _TagListState extends State<TagList> {
@@ -86,6 +95,7 @@ class _TagListState extends State<TagList> {
     var tag = tagToId(widget.tags);
     eprint(tag);
     return Container(
+      color: Theme.of(context).primaryColor,
       child: FutureBuilder(
         future: fetchTags(tag),
         builder: (context, snapshot) {
@@ -105,7 +115,9 @@ class _TagListState extends State<TagList> {
               },
             );
           } else if (snapshot.hasError) {
+            print("==>>  " + snapshot.hasError.toString());
             return Container(
+              color: Theme.of(context).primaryColor,
               height: height,
               child: SingleChildScrollView(
                 child: Column(
@@ -131,18 +143,19 @@ class _TagListState extends State<TagList> {
                       ),
                     ),
                     Center(
-                        child: Text("hmmmmmmm.....",
-                            style: GoogleFonts.frijole(
-                                color: Colors.orange,
-                                fontSize: 30,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.grey,
-                                    blurRadius: 50,
-                                  )
-                                ],
-                            ),
+                      child: Text(
+                        "hmmmmmmm.....",
+                        style: GoogleFonts.frijole(
+                          color: Colors.orange,
+                          fontSize: 30,
+                          shadows: [
+                            Shadow(
+                              color: Colors.grey,
+                              blurRadius: 50,
+                            )
+                          ],
                         ),
+                      ),
                     ),
                   ],
                 ),
@@ -157,7 +170,9 @@ class _TagListState extends State<TagList> {
                   child: SizedBox(
                     width: 50,
                     height: 50,
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).hoverColor,
+                    ),
                   ),
                 ),
               ],
@@ -195,6 +210,7 @@ class _CategoryListState extends State<CategoryList> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Container(
+      color: Theme.of(context).primaryColor,
       child: FutureBuilder(
         future: fetchCategories(widget.tags),
         builder: (context, snapshot) {
@@ -207,13 +223,17 @@ class _CategoryListState extends State<CategoryList> {
                   imageUrl: wpPost['featured_image_urls']['large'][0],
                   title: wpPost['title']['rendered'].toString(),
                   subtitle: wpPost['excerpt']['rendered'],
-                  type:"slugBased",
-                  slug:wpPost["slug"],
+                  type: "slugBased",
+                  slug: wpPost["slug"],
                 );
               },
             );
-          } else if (snapshot.hasError) {
+          } else if (snapshot.hasError &&
+              snapshot.connectionState != ConnectionState.done) {
+            print("==>>" + snapshot.hasError.toString());
+            print("==>" + snapshot.toString());
             return Container(
+              color: Theme.of(context).primaryColor,
               height: height,
               child: SingleChildScrollView(
                 child: Column(
@@ -239,25 +259,28 @@ class _CategoryListState extends State<CategoryList> {
                       ),
                     ),
                     Center(
-                        child: Text("hmmmmmmm.....",
-                            style: GoogleFonts.frijole(
-                                color: Colors.orange,
-                                fontSize: 30,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.grey,
-                                    blurRadius: 50,
-                                  )
-                                ],
-                            ),
+                      child: Text(
+                        "hmmmmmmm.....",
+                        style: GoogleFonts.frijole(
+                          color: Colors.orange,
+                          fontSize: 30,
+                          shadows: [
+                            Shadow(
+                              color: Colors.grey,
+                              blurRadius: 50,
+                            )
+                          ],
                         ),
+                      ),
                     ),
                   ],
                 ),
               ),
             );
           } else {
+            print("waiting for connection using progress indicator");
             return Container(
+              color: Theme.of(context).primaryColor,
               height: height,
               width: double.maxFinite,
               child: Column(
@@ -267,7 +290,9 @@ class _CategoryListState extends State<CategoryList> {
                   SizedBox(
                       width: 50,
                       height: 50,
-                      child: CircularProgressIndicator()),
+                      child: CircularProgressIndicator(
+                        backgroundColor: Theme.of(context).hoverColor,
+                      )),
                 ],
               ),
             );
@@ -278,18 +303,19 @@ class _CategoryListState extends State<CategoryList> {
   }
 }
 
+// ignore: must_be_immutable
 class PostsList extends StatefulWidget {
-  final String tags;
-  PostsList({this.tags});
-
+  double height = 400;
+  Widget widget;
+  PostsList([this.height, this.widget]);
   @override
   _PostsListState createState() => _PostsListState();
 }
 
 class _PostsListState extends State<PostsList> {
-  Future<List> fetchTags(String tags) async {
+  Future<List> fetchTags() async {
     final response = await http.get(
-        "http://philosophytoday.in/wp-json/wp/v2/posts?tag=$tags",
+        "http://philosophytoday.in/wp-json/wp/v2/posts?per_page=100",
         headers: {"Accept": "application/json"});
     var convertData = jsonDecode(response.body);
     return convertData;
@@ -298,13 +324,18 @@ class _PostsListState extends State<PostsList> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Theme.of(context).primaryColor,
+      height: widget.height,
       child: FutureBuilder(
-        future: fetchTags(widget.tags),
+        future: fetchTags(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
+                if (index == 0 && widget.widget != null) {
+                  return widget.widget;
+                }
                 Map wpPost = snapshot.data[index];
                 return PostCard(
                   imageUrl: wpPost['featured_image_urls']['large'][0],
@@ -314,7 +345,18 @@ class _PostsListState extends State<PostsList> {
               },
             );
           } else {
-            return CircularProgressIndicator();
+            return Container(
+              color: Theme.of(context).primaryColor,
+              child: Center(
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).hoverColor,
+                  ),
+                ),
+              ),
+            );
           }
         },
       ),
@@ -343,6 +385,7 @@ class _HotPostListState extends State<HotPostList> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return Container(
+      color: Theme.of(context).primaryColor,
       child: FutureBuilder(
         future: fetchTags(widget.tags),
         builder: (context, snapshot) {
@@ -362,6 +405,7 @@ class _HotPostListState extends State<HotPostList> {
               );
             } else {
               return Container(
+                color: Theme.of(context).primaryColor,
                 height: height,
                 width: double.maxFinite,
                 child: Column(
@@ -463,15 +507,17 @@ class PostCard extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     child: CachedNetworkImage(
-                      placeholder: (context, url){
+                      placeholder: (context, url) {
                         return Container(
-                          child:Center(
+                          child: Center(
                             child: SizedBox(
                               width: 50,
-                                height: 50,
-                              child: CircularProgressIndicator(backgroundColor: Theme.of(context).hoverColor),
+                              height: 50,
+                              child: CircularProgressIndicator(
+                                  backgroundColor:
+                                      Theme.of(context).hoverColor),
                             ),
-                          )
+                          ),
                         );
                       },
                       imageUrl: imageUrl,
@@ -482,18 +528,13 @@ class PostCard extends StatelessWidget {
                 Container(
                   margin:
                       EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
-                  child: Text(
-                      unescape.convert(title),
-                    style: Theme.of(context).textTheme.headline2
-                  ),
+                  child: Text(unescape.convert(title),
+                      style: Theme.of(context).textTheme.headline2),
                 ),
                 Container(
-                  margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: Text(
-                    subtitleData.truncateTo(100),
-                    style: Theme.of(context).textTheme.headline4
-                  )
-                ),
+                    margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    child: Text(subtitleData.truncateTo(100),
+                        style: Theme.of(context).textTheme.headline4)),
               ],
             ),
           ),

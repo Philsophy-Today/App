@@ -2,8 +2,10 @@ import 'package:PhilosophyToday/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'dataManager.dart';
+
+final FirebaseAnalytics _analytics = FirebaseAnalytics();
 class AuthService{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -21,6 +23,7 @@ class AuthService{
     try{
       AuthResult result = await FirebaseAuth.instance.signInAnonymously();
       FirebaseUser user = result.user;
+      _analytics.logSignUp(signUpMethod: "Signed In anonymous");
       return _userFromFirebaseUser(user);
     }catch(e){
       return null;
@@ -39,6 +42,7 @@ class AuthService{
       final AuthResult result = await _auth.signInWithCredential(credential);
       final FirebaseUser user = result.user;
       await saveUserData(user);
+      _analytics.logLogin(loginMethod: "Login by google");
       return _userFromFirebaseUser(user);
     }catch(e){
       debugPrint(e);
@@ -51,6 +55,7 @@ class AuthService{
     try{
       AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
+      _analytics.logLogin(loginMethod: "Login by email and password");
       return _userFromFirebaseUser(user);
     }catch(e){
       return null;
@@ -62,6 +67,7 @@ class AuthService{
     try{
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
+      _analytics.logSignUp(signUpMethod: "Signed up  with email and password");
       return _userFromFirebaseUser(user);
     }catch(e){
       return null;
@@ -70,6 +76,7 @@ class AuthService{
   //sign out
   Future signOut() async{
     try{
+      _analytics.logSignUp(signUpMethod: "Signing out");
       return await _auth.signOut();
     } catch(e){
       return null;

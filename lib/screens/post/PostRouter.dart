@@ -1,14 +1,12 @@
 import 'dart:convert';
 
+import 'package:PhilosophyToday/main.dart' show currentTheme;
 import 'package:PhilosophyToday/screens/post/PostView.dart';
 import 'package:PhilosophyToday/screens/search/postSearch.dart';
 import 'package:flutter/material.dart';
-
 import "package:http/http.dart" as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:PhilosophyToday/main.dart' show currentTheme;
-
 
 import '../tools/Style.dart';
 
@@ -34,7 +32,7 @@ class PostRouter extends StatelessWidget {
     return "";
   }
 
-  Future<List> fetchDynamic(List type,[String url = ""]) async {
+  Future<List> fetchDynamic(List type, [String url = ""]) async {
     if (type[0] == 'slugBased') {
       String url = "http://philosophytoday.in/wp-json/wp/v2/posts?slug=" +
           type[1].toString() +
@@ -43,7 +41,8 @@ class PostRouter extends StatelessWidget {
       final response = await http.get(url);
       var convertData = jsonDecode(response.body);
       return convertData;
-    }if (type[0]=='cUrlBased'){
+    }
+    if (type[0] == 'cUrlBased') {
       debugPrint(url);
       final response = await http.get(url);
       var convertData = jsonDecode(response.body);
@@ -163,13 +162,16 @@ class PostRouter extends StatelessWidget {
                   authorName: wpPost["_embedded"]["author"][0]["name"],
                   authorImage: wpPost["_embedded"]["author"][0]["avatar_urls"]
                       ["96"],
+                  slug: this.type[1],
                 );
               } else {
                 return Center(
                   child: SizedBox(
                     height: 50,
                     width: 50,
-                    child: CircularProgressIndicator(backgroundColor: Colors.indigoAccent,),
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.indigoAccent,
+                    ),
                   ),
                 );
               }

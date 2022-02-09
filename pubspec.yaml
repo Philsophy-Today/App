@@ -15,55 +15,55 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+2
+version: 1.0.2
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_staggered_grid_view: 0.3.3
-  cached_network_image: 2.5.0
-  google_fonts: 1.1.2
-  material_design_icons_flutter: 4.0.5855
-  flutter_html: 1.2.0
-  flappy_search_bar: ^1.7.2
-  expandable: ^4.1.4
-  flutter_launcher_icons: ^0.8.1
-  firebase_auth: ^0.14.0+5
-  firebase_core:
-  firebase_analytics:
-  google_sign_in:
-  cloud_firestore:
-  rxdart:
-  image_picker: ^0.6.7+22
-  hive: ^1.4.4+1
-  hive_flutter: ^0.3.1
-  path_provider: ^1.6.27
-  html_unescape: ^1.0.2
-  provider: ^3.1.0
-  share: ^0.6.5+4
-  url_launcher: ^5.7.10
-  animated_text_kit: ^3.1.2
-  dio: 3.0.10
-  day_night_switcher: ^0.1.1+1
-  flutter_spinkit: ^4.0.0
-  animated_bottom_navigation_bar: ^0.2.1
-  whatsapp_unilink: ^1.0.0+1
-  fluttertoast: ^7.1.8
-  fl_chart: ^0.12.3
-  shared_preferences: 0.5.12+4
-  after_layout: ^1.0.7+2
-  lottie: ^0.7.0+1
-  liquid_swipe: ^1.3.1
-  firebase_messaging: ^6.0.16
+  flutter_staggered_grid_view: ^0.4.0
+  cached_network_image: ^3.1.0
+  google_fonts: ^2.1.0
+  material_design_icons_flutter: ^4.0.5955
+  flutter_html: ^2.1.3
+  material_floating_search_bar: ^0.3.4
+  expandable: ^5.0.1
+  flutter_launcher_icons: ^0.9.2
+  firebase_auth: ^3.1.2
+  firebase_core: ^1.7.0
+  firebase_analytics: ^8.3.3
+  google_sign_in: ^5.1.1
+  cloud_firestore: ^2.5.3
+  rxdart: ^0.27.2
+  image_picker: ^0.8.4+2
+  hive: ^2.0.4
+  hive_flutter: ^1.1.0
+  path_provider: ^2.0.5
+  html_unescape: ^2.0.0
+  provider: ^6.0.1
+  share: ^2.0.4
+  url_launcher: ^6.0.12
+  animated_text_kit: ^4.2.1
+  dio: ^4.0.0
+  day_night_switcher: ^0.2.0+1
+  flutter_spinkit: ^5.1.0
+  animated_bottom_navigation_bar: ^0.3.2
+  whatsapp_unilink: ^2.0.0
+  fluttertoast: ^8.0.8
+  fl_chart: ^0.40.0
+  shared_preferences: ^2.0.8
+  after_layout: ^1.1.0
+  lottie: ^1.2.1
+  liquid_swipe: ^2.1.1
+  firebase_messaging: ^10.0.8
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
 
 dev_dependencies:
-  flutter_native_splash: ^0.2.9
-  hive_generator: ^0.8.2
+  flutter_native_splash: ^1.2.4
+  hive_generator: ^1.1.1
   flutter_test:
     sdk: flutter
 
